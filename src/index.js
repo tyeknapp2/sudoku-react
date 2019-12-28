@@ -2,14 +2,15 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 
-class Game extends React.Component {
+class Puzzle extends React.Component {
+  // eslint-disable-next-line no-useless-constructor
   constructor(props) {
     super(props);
   }
 
   render() {
-    return <div>H</div>;
+    return <div>HelloWorld</div>;
   }
 }
 
-ReactDOM.render(<Game />, document.getElementById("root"));
+ReactDOM.render(<Puzzle />, document.getElementById("root"));
