@@ -22,6 +22,7 @@ const Tile = props => {
         (col % 3 === 0 ? "thick-left " : "") +
         (col % 3 === 2 ? "thick-right " : "")
       }
+      onClick={props.onClick}
     >
       {props.value}
     </button>
