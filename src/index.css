@@ -30,8 +30,31 @@ ul {
   outline: none;
 }
 
+.grey {
+  background-color: slategrey;
+}
+.dark-grey {
+  background-color: darkslategrey;
+}
 .tile-row:after {
   clear: both;
   content: "";
   display: table;
+}
+
+.thick-top {
+  border-top: 2px solid black;
+}
+.thick-left {
+  border-left: 2px solid black;
+}
+.thick-bottom {
+  border-bottom: 2px solid black;
+}
+.thick-right {
+  border-right: 2px solid black;
+}
+.puzzle {
+  display: flex;
+  flex-direction: row;
 }
