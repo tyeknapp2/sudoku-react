@@ -68,7 +68,7 @@ class Puzzle extends React.Component {
   handleClick(i) {
     const solution = this.state.solution.slice(0, 81);
     const temp = this.state.tiles.slice(0, 81);
-    const starters = this.state.starters.slice(0, 17);
+    const starters = this.state.starters.slice();
     if (starters.includes(i)) {
       return;
     }
@@ -98,7 +98,6 @@ class Puzzle extends React.Component {
   }
 }
 
-
 const sugokuBoardToReactZenBoard = board => {
   let reactZenBoard = [];
   for (let i = 0; i < 9; i++)
@@ -109,7 +108,8 @@ const sugokuBoardToReactZenBoard = board => {
 
 const getStarters = reactZenBoard => {
   let s = [];
-  for (let i = 0; i < reactZenBoard.length; i++) if (reactZenBoard[i]) s.push(i);
+  for (let i = 0; i < reactZenBoard.length; i++)
+    if (reactZenBoard[i]) s.push(i);
   return s;
 };
 
@@ -130,7 +130,7 @@ const encodeBoard = board =>
  */
 const encodeParams = params =>
   Object.keys(params)
-    .map(key => key + "=" + `%5B${encodeBoard(params[key])}%5D`)
+    .map(key => key + `=%5B${encodeBoard(params[key])}%5D`)
     .join("&");
 
 const renderResponse = (res, puzzle) => {
@@ -149,7 +149,6 @@ const renderResponse = (res, puzzle) => {
       console.log(json);
 
       solution = sugokuBoardToReactZenBoard(json.solution);
-      alert("Got here");
       puzzle.setState({
         tiles: board,
         solution: solution,
@@ -177,7 +176,6 @@ const generateNewPuzzle = (difficulty = "random", puzzle) => {
       }
     )
     .then(jsonResponse => {
-      alert("Got here");
       return renderResponse(jsonResponse, puzzle);
     })
     .catch(error => {
