@@ -60,8 +60,9 @@ class Puzzle extends React.Component {
     this.state = {
       tiles: [Array(81).fill(null)],
       solution: [Array(81).fill(null)],
-      starters: [1, 34, 25, 17, 3, 79, 28, 75, 48, 20, 56, 65, 6, 73, 8, 22, 44]
+      starters: []
     };
+    generateNewPuzzle("random", this);
   }
 
   handleClick(i) {
@@ -71,7 +72,7 @@ class Puzzle extends React.Component {
     if (starters.includes(i)) {
       return;
     }
-    temp[i] = i;
+    //temp[i] = i;
     this.setState({
       solution: solution,
       tiles: temp,
@@ -79,7 +80,7 @@ class Puzzle extends React.Component {
     });
   }
   render() {
-    const starters = this.state.starters.slice(0, 17);
+    const starters = this.state.starters.slice(0, this.state.starters.length);
     return (
       <div>
         <div className="title">ReactZen Sudoku</div>
@@ -97,5 +98,91 @@ class Puzzle extends React.Component {
   }
 }
 
-const generateNewSolutionArray = () => {};
+
+const sugokuBoardToReactZenBoard = board => {
+  let reactZenBoard = [];
+  for (let i = 0; i < 9; i++)
+    for (let j = 0; j < 9; j++)
+      reactZenBoard.push(board[i][j] === 0 ? null : board[i][j]);
+  return reactZenBoard;
+};
+
+const getStarters = reactZenBoard => {
+  let s = [];
+  for (let i = 0; i < reactZenBoard.length; i++) if (reactZenBoard[i]) s.push(i);
+  return s;
+};
+
+/**
+ * from sugoku
+ * @param {*} board
+ */
+const encodeBoard = board =>
+  board.reduce(
+    (result, row, i) =>
+      result +
+      `%5B${encodeURIComponent(row)}%5D${i === board.length - 1 ? "" : "%2C"}`,
+    ""
+  );
+/**
+ * from Sugoku
+ * @param {*} params
+ */
+const encodeParams = params =>
+  Object.keys(params)
+    .map(key => key + "=" + `%5B${encodeBoard(params[key])}%5D`)
+    .join("&");
+
+const renderResponse = (res, puzzle) => {
+  const data = res;
+  const board = sugokuBoardToReactZenBoard(data.board);
+  console.log(board);
+  const starters = getStarters(board);
+  let solution;
+  fetch("https://sugoku.herokuapp.com/solve", {
+    method: "POST",
+    body: encodeParams(data),
+    headers: { "Content-Type": "application/x-www-form-urlencoded" }
+  })
+    .then(response => response.json())
+    .then(json => {
+      console.log(json);
+
+      solution = sugokuBoardToReactZenBoard(json.solution);
+      alert("Got here");
+      puzzle.setState({
+        tiles: board,
+        solution: solution,
+        starters: starters
+      });
+    });
+};
+
+/**
+ *
+ * @param {*} difficulty
+ * @param {Puzzle} puzzle
+ */
+const generateNewPuzzle = (difficulty = "random", puzzle) => {
+  const url = "https://sugoku.herokuapp.com/board";
+  const queryParams = "?difficulty=";
+  fetch(`${url}${queryParams}${difficulty}`)
+    .then(
+      response => {
+        if (response.ok) return response.json();
+        throw new Error("request failed");
+      },
+      networkError => {
+        console.log(networkError.message);
+      }
+    )
+    .then(jsonResponse => {
+      alert("Got here");
+      return renderResponse(jsonResponse, puzzle);
+    })
+    .catch(error => {
+      alert("There was an error in reaching the Sugoku api:\n" + error.message);
+    });
+};
+
 ReactDOM.render(<Puzzle />, document.getElementById("root"));

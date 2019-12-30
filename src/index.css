@@ -9,7 +9,7 @@ ul {
 
 .tile {
   background: #fff;
-  border: 1px solid #999;
+  border: 1px groove #999;
   float: left;
   font-size: 24px;
   font-weight: bold;
@@ -43,16 +43,16 @@ ul {
 }
 
 .thick-top {
-  border-top: 2px solid black;
+  border-top: 1px solid black;
 }
 .thick-left {
-  border-left: 2px solid black;
+  border-left: 1px solid black;
 }
 .thick-bottom {
-  border-bottom: 2px solid black;
+  border-bottom: 1px solid black;
 }
 .thick-right {
-  border-right: 2px solid black;
+  border-right: 1px solid black;
 }
 .puzzle {
   display: flex;
